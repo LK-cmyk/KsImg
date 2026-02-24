@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GitHub 图床防盗链（Raw模式）</title>
+    <title>GitHub 图床（Raw模式）</title>
     <style>
         body { text-align: center; margin-top: 50px; }
         img { max-width: 90%; }
@@ -11,42 +11,31 @@
 </head>
 <body>
     <div id="image-container"></div>
-    <img src="https://lk-cmyk.github.io/KsImg/index.html?img=img/1.png" alt="示例图片" style="display:none;">
 
     <script>
-        // 允许的域名列表（支持正则表达式）
-        const allowedDomains = [
-            /^https?:\/\/ksweb\.dpdns\.org$/,
-            /^https?:\/\/lk-cmyk\.github\.io$/,
-            /^https?:\/\/yuanbao\.tencent\.com$/,
-        ];
-
         // 获取 URL 参数
         const urlParams = new URLSearchParams(window.location.search);
         const imgPath = urlParams.get('img');  // 例如 ?img=images/photo.jpg
 
-        // 检查 Referer
-        const referrer = document.referrer;
-        const isAllowed = allowedDomains.some(domain => domain.test(referrer));
-
         const container = document.getElementById('image-container');
 
-        if (isAllowed && imgPath) {
-            // 允许访问，创建图片元素（使用raw.githubusercontent.com）
+        if (imgPath) {
+            // 直接创建图片元素（使用raw.githubusercontent.com）
             const img = document.createElement('img');
             
             // 构建raw.githubusercontent.com完整路径
+            // 假设仓库地址为：https://github.com/lk-cmyk/KsImg
             const rawBaseUrl = 'https://raw.githubusercontent.com/lk-cmyk/KsImg/main/';
             img.src = rawBaseUrl + imgPath;
             
-            img.alt = 'Protected Image';
+            img.alt = 'Image';
             img.onerror = function() {
                 container.innerHTML = '<p>❌ 图片加载失败：请检查图片路径或仓库权限</p>';
             };
             container.appendChild(img);
         } else {
-            // 拒绝访问，显示错误信息
-            container.innerHTML = '<p>🚫 访问被拒绝：未授权域名或缺少图片参数。</p>';
+            // 缺少图片参数
+            container.innerHTML = '<p>❌ 请提供图片路径参数（例如 ?img=images/photo.jpg）</p>';
         }
     </script>
 </body>

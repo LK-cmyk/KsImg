@@ -1,32 +1,44 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 <head>
-    <meta charset="utf-8">
-    <title>Image Host</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub 图床防盗链</title>
+    <style>
+        body { text-align: center; margin-top: 50px; }
+        img { max-width: 90%; }
+    </style>
+</head>
+<body>
+    <div id="image-container"></div>
+
     <script>
-        // 允许的域名列表（支持正则）
+        // 允许的域名列表（支持正则表达式）
         const allowedDomains = [
             /^https?:\/\/ksweb\.dpdns\.org$/,
             /^https?:\/\/lk-cmyk\.github\.io$/, 
         ];
 
-        // 获取图片名称
+        // 获取 URL 参数
         const urlParams = new URLSearchParams(window.location.search);
-        const imgName = urlParams.get('img');
+        const imgPath = urlParams.get('img');  // 例如 ?img=images/photo.jpg
 
-        // 检查来源
+        // 检查 Referer
         const referrer = document.referrer;
         const isAllowed = allowedDomains.some(domain => domain.test(referrer));
 
-        if (isAllowed && imgName) {
-            // 允许加载图片
-            document.write(`<img src="images/${imgName}" alt="${imgName}">`);
+        const container = document.getElementById('image-container');
+
+        if (isAllowed && imgPath) {
+            // 允许访问，创建图片元素
+            const img = document.createElement('img');
+            img.src = imgPath;
+            img.alt = 'Protected Image';
+            container.appendChild(img);
         } else {
-            // 拒绝访问，可显示默认图片或错误信息
-            document.write('<p>Access denied.</p>');
+            // 拒绝访问，显示错误信息
+            container.innerHTML = '<p>🚫 访问被拒绝：未授权域名或缺少图片参数。</p>';
         }
     </script>
-</head>
-<body>
 </body>
 </html>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GitHub 图床（Raw模式）</title>
+    <title>GitHub 图床（CDN模式）</title>
     <style>
         body { text-align: center; margin-top: 50px; }
         img { max-width: 90%; }
@@ -13,6 +13,23 @@
     <div id="image-container"></div>
 
     <script>
+        // 白名单域名列表
+        const allowedDomains = [
+            'lk-cmyk.github.io',
+            'ksweb.dpdns.org',
+        ];
+
+        // 获取当前域名
+        const currentDomain = window.location.hostname;
+        console.log(currentDomain);
+        
+        // 检查域名是否在白名单中
+        if (!allowedDomains.includes(currentDomain)) {
+            document.getElementById('image-container').innerHTML = 
+                '<p>❌ 访问被拒绝：当前域名不在白名单中</p>';
+            throw new Error('Domain not allowed');
+        }
+
         // 获取 URL 参数
         const urlParams = new URLSearchParams(window.location.search);
         const imgPath = urlParams.get('img');  // 例如 ?img=images/photo.jpg
@@ -20,13 +37,13 @@
         const container = document.getElementById('image-container');
 
         if (imgPath) {
-            // 直接创建图片元素（使用raw.githubusercontent.com）
+            // 使用 jsDelivr CDN
             const img = document.createElement('img');
             
-            // 构建raw.githubusercontent.com完整路径
-            // 假设仓库地址为：https://github.com/lk-cmyk/KsImg
-            const rawBaseUrl = 'https://raw.githubusercontent.com/lk-cmyk/KsImg/main/';
-            img.src = rawBaseUrl + imgPath;
+            // 构建 jsDelivr CDN 路径
+            // 仓库地址：https://github.com/lk-cmyk/KsImg
+            const cdnBaseUrl = 'https://cdn.jsdelivr.net/gh/lk-cmyk/KsImg@main/';
+            img.src = cdnBaseUrl + imgPath;
             
             img.alt = 'Image';
             img.onerror = function() {

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GitHub 图床防盗链</title>
+    <title>GitHub 图床防盗链（Raw模式）</title>
     <style>
         body { text-align: center; margin-top: 50px; }
         img { max-width: 90%; }
@@ -31,10 +31,17 @@
         const container = document.getElementById('image-container');
 
         if (isAllowed && imgPath) {
-            // 允许访问，创建图片元素
+            // 允许访问，创建图片元素（使用raw.githubusercontent.com）
             const img = document.createElement('img');
-            img.src = imgPath;
+            
+            // 构建raw.githubusercontent.com完整路径
+            const rawBaseUrl = 'https://raw.githubusercontent.com/lk-cmyk/KsImg/main/';
+            img.src = rawBaseUrl + imgPath;
+            
             img.alt = 'Protected Image';
+            img.onerror = function() {
+                container.innerHTML = '<p>❌ 图片加载失败：请检查图片路径或仓库权限</p>';
+            };
             container.appendChild(img);
         } else {
             // 拒绝访问，显示错误信息

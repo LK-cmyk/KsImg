@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Image Host</title>
+    <script>
+        // 允许的域名列表（支持正则）
+        const allowedDomains = [
+            /^https?:\/\/localhost(:\d+)?$/,  // 本地开发
+            /^https?:\/\/yourdomain\.com$/,   // 你的域名
+        ];
+
+        // 获取图片名称
+        const urlParams = new URLSearchParams(window.location.search);
+        const imgName = urlParams.get('img');
+
+        // 检查来源
+        const referrer = document.referrer;
+        const isAllowed = allowedDomains.some(domain => domain.test(referrer));
+
+        if (isAllowed && imgName) {
+            // 允许加载图片
+            document.write(`<img src="images/${imgName}" alt="${imgName}">`);
+        } else {
+            // 拒绝访问，可显示默认图片或错误信息
+            document.write('<p>Access denied.</p>');
+        }
+    </script>
+</head>
+<body>
+</body>
+</html>
